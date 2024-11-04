@@ -13,6 +13,8 @@ import {
 } from "../urls";
 import { errorToast, successToast } from "../Components/toastMessage/Toast";
 
+const token = localStorage.getItem("amiyonTkn");
+
 export const userLogin = async (data = {}, navigate = () => {}) => {
   try {
     await axios
@@ -33,6 +35,7 @@ export const userLogin = async (data = {}, navigate = () => {}) => {
     console.error(error);
   }
 };
+
 // Admin logout
 export const userLogout = (navigate) => {
   try {
@@ -50,6 +53,7 @@ export const addCompanyDetails = async (data = {}, navigate = () => {}) => {
       .post(postCompanyDetailsUrl, data, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
@@ -67,11 +71,17 @@ export const addCompanyDetails = async (data = {}, navigate = () => {}) => {
 // function for getting company details
 export const getCompany = async (updateState = () => {}) => {
   try {
-    await axios.get(getCompanyUrl).then((response) => {
-      if (response.status === 200 && response.data.isSuccess) {
-        updateState(response.data.companyData);
-      }
-    });
+    await axios
+      .get(getCompanyUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200 && response.data.isSuccess) {
+          updateState(response.data.companyData);
+        }
+      });
   } catch (error) {
     errorToast(error.response.data.message);
     console.error(error);
@@ -85,6 +95,7 @@ export const removeCompany = async (companyId = "", updateState = () => {}) => {
       .delete(deleteCompanyUrl, {
         headers: {
           companyId,
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
@@ -106,6 +117,7 @@ export const updateCompany = async (data = {}, navigate = () => {}) => {
       .post(updateCompanyUrl, data, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
@@ -123,12 +135,22 @@ export const updateCompany = async (data = {}, navigate = () => {}) => {
 // Add employee
 export const addEmployee = async (data = {}, navigate = () => {}) => {
   try {
-    await axios.post(postEmployeeDetails, { ...data }).then((response) => {
-      if (response.status === 200 && response.data.isSuccess) {
-        navigate("/employees");
-        successToast(response.data.message);
-      }
-    });
+    await axios
+      .post(
+        postEmployeeDetails,
+        { ...data },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.status === 200 && response.data.isSuccess) {
+          navigate("/employees");
+          successToast(response.data.message);
+        }
+      });
   } catch (error) {
     errorToast(error.response.data.message);
     console.error(error);
@@ -138,11 +160,17 @@ export const addEmployee = async (data = {}, navigate = () => {}) => {
 // Fetching employee lsit
 export const getEmployee = async (updateState = () => {}) => {
   try {
-    await axios.get(getEmployeeUrl).then((response) => {
-      if (response.status === 200 && response.data.isSuccess) {
-        updateState(response.data.employeeData);
-      }
-    });
+    await axios
+      .get(getEmployeeUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200 && response.data.isSuccess) {
+          updateState(response.data.employeeData);
+        }
+      });
   } catch (error) {
     errorToast(error.response.data.message);
     console.error(error);
@@ -156,6 +184,7 @@ export const removeEmployee = async (id, updateState) => {
       .delete(deleteEmployeeUrl, {
         headers: {
           id,
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
@@ -173,12 +202,22 @@ export const removeEmployee = async (id, updateState) => {
 // function for edit employee details
 export const editEmployeeDetails = async (data, navigate) => {
   try {
-    await axios.put(updateEmployee, { ...data }).then((response) => {
-      if (response.status === 200 && response.data.isSuccess) {
-        successToast(response.data.message);
-        navigate("/employees");
-      }
-    });
+    await axios
+      .put(
+        updateEmployee,
+        { ...data },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.status === 200 && response.data.isSuccess) {
+          successToast(response.data.message);
+          navigate("/employees");
+        }
+      });
   } catch (error) {
     errorToast(error.response.data.message);
     console.error(error);
@@ -186,15 +225,21 @@ export const editEmployeeDetails = async (data, navigate) => {
 };
 
 // Getting dashboard details
-export const getDashboardData=async(updateState)=>{
+export const getDashboardData = async (updateState) => {
   try {
-    await axios.get(dashboardDataUrl).then((response)=>{
-      if(response.status===200&&response.data.isSuccess){
-          updateState(response.data.details)
-      }
-    })
+    await axios
+      .get(dashboardDataUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200 && response.data.isSuccess) {
+          updateState(response.data.details);
+        }
+      });
   } catch (error) {
     errorToast(error.response.data.message);
     console.error(error);
   }
-}
+};

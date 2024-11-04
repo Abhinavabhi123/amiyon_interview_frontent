@@ -30,6 +30,7 @@ export default function AddCompany() {
     logo: yup.mixed().nullable(),
     website: yup.string().url("Website must be a valid URL").nullable(),
   });
+  
   const {
     values,
     errors,
